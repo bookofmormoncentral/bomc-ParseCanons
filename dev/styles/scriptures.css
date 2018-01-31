@@ -1,0 +1,88 @@
+/* Scriptures Text Formatting */
+@font-face {
+    font-family: PalatinoLinotype;
+    src: url('../fonts/pala.ttf')  format('truetype');
+}
+
+@font-face {
+    font-family: PalatinoLinotypeb;
+    src: url('../fonts/palab.ttf')  format('truetype');
+    font-weight:bold;
+}
+
+@font-face {
+    font-family: PalatinoLinotypebi;
+    src: url('../fonts/palabi.ttf')  format('truetype');
+    font-weight:bold-italic;
+}
+
+@font-face {
+    font-family: PalatinoLinotypei;
+    src: url('../fonts/palai.ttf')  format('truetype');
+    font-weight:italic;
+}
+
+html, body {
+    font-size:120%;
+}
+
+h1 {
+    font-weight: normal;
+}
+
+/* common */
+header, .body-block  {
+    font-family: PalatinoLinotype;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+/* Headers, Titles */
+header  {
+    font-family: PalatinoLinotype;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+header .dominant {
+    /* background-color: yellowgreen; */
+}
+
+header .subtitle {
+    /* background-color: blue; */
+}
+
+header .intro {
+    font-family: PalatinoLinotypei;
+    /* background-color: red; */
+}
+
+header .title-number {
+    text-align: center;
+    text-transform: uppercase;
+    /* background-color: aqua; */
+}
+
+header .study-summary {
+    /* background-color: plum; */
+}
+
+/* Body */
+.body-block {
+    
+}
+
+.verse {
+    /* background-color: yellow; */
+}
+
+.verse-number {
+    font-family: PalatinoLinotypei;
+    /* background-color: brown; */
+    /* font-size: 150%; */
+}
+
+/* Footer */
+.study-notes {
+    /* background-color: orange; */
+}

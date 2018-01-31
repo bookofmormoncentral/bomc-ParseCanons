@@ -1,0 +1,120 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+/* Navigation Formatting */
+
+html, body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0px;
+    max-width: 100%;
+    overflow-x: hidden;
+    background: #416A86;
+    font-size:120%;
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #30506B;
+    overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav {
+    display: block;
+    color: #FFFFFF;
+    padding: 14px;
+    text-decoration: none;
+    width: 100%;
+    margin: 0px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.topnav table, tr {
+    width: 100%;
+}
+
+.leftButton {
+    width: 40px;
+}
+.titleBar {
+    width: 100%;
+    display:table;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.rightButton {
+    width: 40px;
+}
+
+.title1 {
+    /* margin-left: auto; */
+    margin-right: auto;
+    padding:15px 18px ;
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+.content {
+    margin: 0px;
+    width: 100%;
+}
+
+p, a {
+    text-decoration: none;
+    list-style: none;  
+    color: white; 
+}
+
+p {
+    padding: 10px;
+    padding-left: 20px;
+}
+
+p:hover, a:hover {
+    background-color: #30506B;
+}
+
+.column {
+    float: left;
+    width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.back {
+    position: absolute;
+    display: block;
+    float: left;
+}
+
+span {
+    width: 100%;
+}
+
+.rcorners2 {
+    border-radius: 8px;
+    border: 2px solid white;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: #30506B;
+    text-align: center;
+    color: #FFFFFF;
+}
