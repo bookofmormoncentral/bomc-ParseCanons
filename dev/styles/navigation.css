@@ -8,7 +8,7 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
     background: #416A86;
-    font-size:120%;
+    font-size:115%;
 }
 
 /* Add a black background color to the top navigation */
@@ -59,8 +59,9 @@ html, body {
 
 .title1 {
     /* margin-left: auto; */
-    margin-right: auto;
+    /*margin-right: auto;*/
     padding:15px 18px ;
+    text-align: center;
     color: #FFFFFF;
     text-transform: uppercase;
 }
@@ -74,14 +75,22 @@ p, a {
     text-decoration: none;
     list-style: none;  
     color: white; 
+    font-size:90%;
 }
 
 p {
-    padding: 10px;
-    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 25px;
+    padding-right: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-p:hover, a:hover {
+/*p:hover, a:hover {
+    background-color: #30506B;
+}*/
+p:active, a:active {
     background-color: #30506B;
 }
 
@@ -109,12 +118,13 @@ span {
 
 .rcorners2 {
     border-radius: 8px;
-    border: 2px solid white;
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    border: 1px solid white;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     background-color: #30506B;
     text-align: center;
     color: #FFFFFF;
+    font-size:70%;
 }

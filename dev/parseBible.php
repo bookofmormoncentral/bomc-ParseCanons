@@ -233,8 +233,13 @@ class parseBible extends folderFilesReader {
     $parent_folder = count(explode('/', $source)) == 10 ? '../../../' : '../../../../';
     $file_stream = $this->modifyTagString('<lds:meta', '</lds:meta>', $file_stream, $this->newCSS($source));
     // remove <footer>
-    $file_stream = $this->modifyTagString('<footer class="study-notes">', '</footer>', $file_stream
-            , '<footer class="study-notes"></footer></div><script type="text/javascript" src="' . $parent_folder . 'js/functions.js"></script>');
+    $from = strpos($file_stream, '<footer class="study-notes">');
+    if ($from === false) {
+      $file_stream = str_replace('</body>', '</div><script type="text/javascript" src="' . $parent_folder . 'js/functions.js"></script></body>', $file_stream);
+    } else {
+      $file_stream = $this->modifyTagString('<footer class="study-notes">', '</footer>', $file_stream
+              , '<footer class="study-notes"></footer></div><script type="text/javascript" src="' . $parent_folder . 'js/functions.js"></script>');
+    }
     // Remove study-note-ref and marker
     // echo $source.'<br/>';
     $file_stream = $this->removeAllStudyNotes($source, $file_stream);

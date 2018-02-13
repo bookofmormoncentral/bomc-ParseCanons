@@ -13,6 +13,7 @@ class createIndexFiles extends folderFilesReader {
   private $temp_previous_dom_href_dom_level = 0;
   private $temp_previous_dom_href_map = 0;
   private $no_map_seq = 0;
+  private $full_book = array();
 
   function __construct() {
     parent::__construct();
@@ -93,7 +94,7 @@ class createIndexFiles extends folderFilesReader {
     $files = array();
     $files[] = array('/Applications/MAMP/htdocs/bomc/dev/js/hammer.min.js', '/hammer.min.js');
     $files[] = array('/Applications/MAMP/htdocs/bomc/dev/js/functions.js', '/functions.js');
-    $files[] = array('/Applications/MAMP/htdocs/bomc/dev/js/functions.js', '/functions_index.js');
+    $files[] = array('/Applications/MAMP/htdocs/bomc/dev/js/functions_index.js', '/functions_index.js');
     foreach ($files as $key => $file) {
       copy($file[0], $new_styles . $file[1]);
     }
@@ -195,6 +196,7 @@ class createIndexFiles extends folderFilesReader {
   }
 
   private function createIndexChaptersFromArrayLink($file, $level) {
+    $this->full_book = array();
     // echo '<fieldset style="border: 1px double SlateBlue;">';
     $new_file_book_index = str_replace($this->scriptures_folder
             , $this->scriptures_modified_folder, $file);
@@ -218,14 +220,14 @@ class createIndexFiles extends folderFilesReader {
       $clearfix = true;
       foreach ($this->links as $key_main => $value_main) {
         // echo ' | value_main <span style="color:blue;">'.$value_main.'</span><br/>';
-        $this->createIndexChaptersHrefsSimple($value_main, $subBook, 'col-1-6');
+        $this->createIndexChaptersHrefsSimple($value_main, $subBook, 'col-1-6', $new_file_book_index);
       }
     } else {
       if (strpos($file, '/pgp/') !== false) {
         $subBook->setContent('<div class="row clearfix">' . $this->new_line); // close this later
         $clearfix = true;
         // when is not Pearl of Grace, no subooks, only direct links.
-        $this->createIndexChaptersHrefsSimple($this->links['first_links'], $subBook, 'col-1-2');
+        $this->createIndexChaptersHrefsSimple($this->links['first_links'], $subBook, 'col-1-2', $new_file_book_index);
         $class_for_this_subbook = 'col-1-1';
       } else {
         $subBook->setContent('<div class="clearfix">' . $this->new_line); // close this later
@@ -243,6 +245,7 @@ class createIndexFiles extends folderFilesReader {
     $subBook->createFile();
     // echo '<b>Index File was created $new_file_book_index <span style="color:fuchsia;">'.htmlentities($subBook->getFileName()).'</span></b>';
     // echo '</fieldset>';
+    $this->addMetaChapters();
   }
 
   private function getBookChapterName($name) {
@@ -257,7 +260,10 @@ class createIndexFiles extends folderFilesReader {
     return $name_temp;
   }
 
-  private function createIndexChaptersHrefsSimple($hrefs, &$subBook, $class_columns) {
+  private function createIndexChaptersHrefsSimple($hrefs, &$subBook, $class_columns, $new_file_book_index) {
+    $chapters=array();
+    $chapter_count=0;
+    $hasSlash = false;
     foreach ($hrefs as $key => $value) {
       if (strpos($key, '.html') !== false && (in_array($key, $this->files_to_ignore) === false)) {
         $href = $key;
@@ -281,8 +287,44 @@ class createIndexFiles extends folderFilesReader {
         $subBook->setContent('<div class="' . $this_simple_book_column . '">' . $this->new_line); // Index HTML chapters
         $subBook->setHref($href, $name, 1);
         $subBook->setContent('</div>' . $this->new_line);
+
+        //echo 'path '.$href.'<br>';
+        if (in_array($href, $this->files_to_ignore) === false) {
+
+          $hrl = $href;
+
+          if (strrpos($href, "/") === false) {
+            if ($hasSlash === true) {
+              $this->readChaptersArray($chapters);
+              $chapters = array();
+              $chapter_count=0;
+            }
+            
+            $hasSlash = false;
+          } else {
+            if ($hasSlash === false) {
+              $this->readChaptersArray($chapters);
+              $chapters = array();
+              $chapter_count=0;
+            }
+
+            $hasSlash = true;
+          }
+          $hrl = explode('/', $href);
+          $hrl = isset($hrl[1]) ? $hrl[1] : $hrl[0];
+          $file_to_include_navigations=str_replace('index.html', '', $new_file_book_index).htmlentities($href);
+          //echo 'path '.$file_to_include_navigations.'<br>';
+          //echo 'hrl '.$hrl.'<br>';
+          $chapter_count++;
+          $chapters[$chapter_count]=array('file'=>$file_to_include_navigations
+                                          ,'hrl'=>$hrl
+          );
+        }
+
       }
     }
+
+    $this->readChaptersArray($chapters);
   }
 
   /*
@@ -542,18 +584,81 @@ class createIndexFiles extends folderFilesReader {
 
   private function readChaptersArray($chapters) {
     // $this->array2ul($chapters);
-    $count=0;
     foreach($chapters as $k=>$v) {
-      $count++;
       // echo $k.' => '.$v['file'].'<br/>';
+      $split = explode('/', $v['file']);
+
+      $book = '';
+      $folder = '';
+      $fileName = '';
+      $i = 0;
+      foreach ($split as $value) {
+        //echo 'value: '.$value.'<br>';
+        if ($value === 'scriptures') {
+          $book = $split[$i + 1];
+          if (count($split) == ($i + 3)) {
+            $fileName = $split[$i + 2];
+          } else {
+            $folder = $split[$i + 2];
+            $fileName = $split[$i + 3];
+          }
+          break;
+        }
+        $i++;
+      }
+      /*echo 'book: '.$book.'<br>';
+      echo 'folder: '.$folder.'<br>';
+      echo 'file: '.$file.'<br>';*/
+      $chapter=array('file'=>$v['file'],'hrl'=>$v['hrl'],'book'=>$book,'folder'=>$folder,'fileName'=>$fileName);
+
+      array_push($this->full_book, $chapter);
+    }
+  }
+
+  private function addMetaChapters() {
+    //$this->array2ul($this->full_book);
+    
+    $count=0;
+    foreach($this->full_book as $k=>$v) {
+      
+      //echo $k.' => '.$v['file'].'<br/>';
       $hrl_prev = '';
       $hrl_next = '';
-      if(isset($chapters[$count-1])) {
-        $hrl_prev=$chapters[$count-1]['hrl'];
+      $prefix = '';
+      $folder = $v['folder'];
+      if(isset($this->full_book[$count-1])) {
+        if ($this->full_book[$count-1]['folder'] !== '') {
+          if ($folder === '') {
+            $prefix = $this->full_book[$count-1]['folder'].'/';
+          } else {
+            if ($this->full_book[$count-1]['folder'] !== $folder) {
+              $prefix = '../'.$this->full_book[$count-1]['folder'].'/';
+            }
+          }
+        } else {
+          if ($this->full_book[$count-1]['folder'] !== $folder) {
+            $prefix = '../';
+          }
+        }
+        $hrl_prev=$prefix.$this->full_book[$count-1]['hrl'];
         // echo 'prev: '.$hrl_prev.'<br/>';
       }
-      if(isset($chapters[$count+1])) {
-        $hrl_next=$chapters[$count+1]['hrl'];
+      $prefix = '';
+      if(isset($this->full_book[$count+1])) {
+        if ($this->full_book[$count+1]['folder'] !== '') {
+          if ($folder === '') {
+            $prefix = $this->full_book[$count+1]['folder'].'/';
+          } else {
+            if ($this->full_book[$count+1]['folder'] !== $folder) {
+              $prefix = '../'.$this->full_book[$count+1]['folder'].'/';
+            }
+          }
+        } else {
+          if ($this->full_book[$count+1]['folder'] !== $folder) {
+            $prefix = '../';
+          }
+        }
+        $hrl_next=$prefix.$this->full_book[$count+1]['hrl'];
         // echo 'next: '.$hrl_next.'<br/>';
       }
       // Modify the File.
@@ -570,6 +675,8 @@ class createIndexFiles extends folderFilesReader {
       //                       );
               
       file_put_contents($v['file'], $downloaded_stream);
+
+      $count++;
     }
   }
 
